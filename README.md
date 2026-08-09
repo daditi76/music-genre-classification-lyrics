@@ -1,20 +1,24 @@
-# Music Genre Classification using Song Lyrics
+# Multilingual Lyrics Dataset — GitHub Parts
 
-This project uses **Natural Language Processing (NLP) and Machine Learning** to classify music genres based on song lyrics.
+The original CSV is larger than GitHub's normal web-upload limit, so it has
+been split into multiple CSV files. No rows were intentionally removed.
 
-### Approaches Used
+To reconstruct the original CSV, concatenate the parts in numeric order while
+keeping only the first header:
 
-- **Classical ML:** TF-IDF, LSA, Logistic Regression, SVM, and Random Forest.
-- **Multilingual NLP:** Fine-tuned **mBERT (`bert-base-multilingual-cased`)** for multilingual song genre classification.
-- **Evaluation:** Accuracy, Precision, Recall, F1-score, Confusion Matrix, and other visualizations.
+```bash
+python - <<'PY'
+from pathlib import Path
 
-### Languages
-English, Spanish, and Portuguese.
+parts = sorted(Path("datasets").glob("merged_multilingual_lyrics_part_*.csv"))
 
-### Technologies
-Python • Scikit-learn • PyTorch • Hugging Face Transformers • Pandas • NumPy • Matplotlib • Seaborn
-
-### Project
-Final Year Project  
-**Department of Information Technology**  
-**University Institute of Technology, The University of Burdwan**
+with open("merged_multilingual_lyrics.csv", "wb") as out:
+    for i, p in enumerate(parts):
+        with open(p, "rb") as f:
+            if i == 0:
+                out.write(f.read())
+            else:
+                f.readline()  # skip repeated header
+                out.write(f.read())
+PY
+```
